@@ -5,6 +5,10 @@ Copy `.secret.template` to `.secret` and fill in private keys of wallets require
 Run `yarn flatten` first to merge Solidity sources.
 Run `yarn compile` to compile the contracts.
 
+# Testing
+Run `yarn dev` to start ganache dev blockchain
+Run `yarn test` to do the tests
+
 # Deploy
 Run `yarn deploy:<network name>`
 

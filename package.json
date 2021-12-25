@@ -6,9 +6,10 @@
   "author": "ntchung <nguyentruongchung@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "ganache-cli -d -f https://data-seed-prebsc-1-s1.binance.org:8545 -m \"myth like bonus scare over problem client lizard pioneer submit female collect\"",
+    "dev": "ganache-cli --networkdId 1337 -d -f https://data-seed-prebsc-1-s1.binance.org:8545 -m \"myth like bonus scare over problem client lizard pioneer submit female collect\"",
     "flatten": "gulp -f ./scripts/gulpfile.js flatten",
     "compile": "hardhat compile",
+    "test": "hardhat test --network dev",
     "deploy:dev": "cross-env NETWORK=dev hardhat run --verbose scripts/deploy.js --network dev",
     "deploy:testnet": "cross-env NETWORK=testnet hardhat run --verbose scripts/deploy.js --network testnet"
   },
@@ -21,7 +22,9 @@
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@openzeppelin/hardhat-upgrades": "^1.12.0",
+    "chai": "^4.3.4",
     "cross-env": "^7.0.3",
+    "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.2",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
