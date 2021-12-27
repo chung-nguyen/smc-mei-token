@@ -44,7 +44,8 @@ async function mergeSolidityContract(source, dest, license) {
  * Merge all contract source codes into singular files for audit
  */
 async function flatten() {
-  await mergeSolidityContract(path.join(__dirname, '../src/MEIToken.sol'), path.join(__dirname, '../contracts/MEIToken.sol'));  
+  await mergeSolidityContract(path.join(__dirname, './src/MEIToken.sol'), path.join(__dirname, './contracts/MEIToken.sol'));  
+  await mergeSolidityContract(path.join(__dirname, './src/USDMToken.sol'), path.join(__dirname, './contracts/USDMToken.sol'));  
 }
 
 exports.flatten = flatten;

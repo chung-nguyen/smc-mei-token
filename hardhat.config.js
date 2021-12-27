@@ -2,7 +2,39 @@ const fs = require('fs');
 
 require('@openzeppelin/hardhat-upgrades');
 
+const argv = require('minimist')(process.argv.slice(2));
+const env = require('./env.json')[argv.network];
 const secret = JSON.parse(fs.readFileSync('.secret'));
+
+/**
+ * 
+ */
+task('deployMEI', 'Deploy MEI token')
+  .setAction(async () => {
+    const MEIToken = await ethers.getContractFactory('MEIToken');
+    const token = await upgrades.deployProxy(MEIToken, [env.TOKEN_NAME, env.TOKEN_TICKER, env.TOKEN_TOTAL_SUPPLY]);
+    await token.deployed();
+
+    console.log('Token deployed to:', token.address);
+  });
+
+/**
+ * USDM deployment task
+ */
+task('deployUSDM', 'Deploy USD Mock token')
+  .setAction(async () => {
+    const [deployer] = await ethers.getSigners();
+
+    console.log('Deploying contracts with the account:', deployer.address);
+    console.log('Account balance:', (await deployer.getBalance()).toString());
+
+    const USDMToken = await ethers.getContractFactory('USDMToken');
+    const token = await USDMToken.deploy('USDM', 'USD Mock');
+    await token.deployed();
+
+    console.log('USDM token address:', token.address);  
+  });
+
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -21,15 +53,28 @@ module.exports = {
       ]
     },
     testnet: {
+      url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+      accounts: [secret.testnet],
+      chainId: 97
+    },    
+    mainnet: {
+      url: 'https://bsc-dataseed1.binance.org',
+      accounts: [secret.mainnet],
+      chainId: 56
+    },    
+
+    // Reserved
+    rinkeby: {
       url: 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       accounts: [secret.testnet],
       chainId: 4
     },
+    
     ropsten: {
       url: 'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       accounts: [secret.testnet],
       chainId: 3
-    }
+    }    
   },
   solidity: {
     version: "0.8.4",

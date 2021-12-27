@@ -10,8 +10,8 @@
     "flatten": "gulp flatten",
     "compile": "hardhat compile",
     "test": "hardhat test --network dev",
-    "deploy:dev": "cross-env NETWORK=dev hardhat run --verbose scripts/deploy.js --network dev",
-    "deploy:testnet": "cross-env NETWORK=testnet hardhat run --verbose scripts/deploy.js --network testnet"
+    "deploy:dev": "hardhat deployMEI --verbose --network dev",
+    "deploy:testnet": "hardhat deployMEI --verbose --network testnet"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.0",

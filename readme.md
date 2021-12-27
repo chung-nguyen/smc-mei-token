@@ -14,3 +14,6 @@ Run `yarn deploy:<network name>`
 
 # Upgrade
 Run `yarn upgrade:<network name>`
+
+# Deploy USDM
+Run `npx hardhat deployUSDM --network <network name>`
