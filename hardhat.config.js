@@ -29,10 +29,27 @@ task('deployUSDM', 'Deploy USD Mock token')
     console.log('Account balance:', (await deployer.getBalance()).toString());
 
     const USDMToken = await ethers.getContractFactory('USDMToken');
-    const token = await USDMToken.deploy('USDM', 'USD Mock');
-    await token.deployed();
 
-    console.log('USDM token address:', token.address);  
+    const token1 = await USDMToken.deploy('USDM1', 'USD Mock 1');
+    await token1.deployed();
+
+    const token2 = await USDMToken.deploy('USDM2', 'USD Mock 2');
+    await token2.deployed();
+
+    const token3 = await USDMToken.deploy('USDM3', 'USD Mock 3');
+    await token3.deployed();
+
+    const token4 = await USDMToken.deploy('USDM4', 'USD Mock 4');
+    await token4.deployed();
+
+    const token5 = await USDMToken.deploy('USDM5', 'USD Mock 5');
+    await token5.deployed();
+
+    console.log('USDM1 token address:', token1.address);  
+    console.log('USDM2 token address:', token2.address);  
+    console.log('USDM3 token address:', token3.address);  
+    console.log('USDM4 token address:', token4.address);  
+    console.log('USDM5 token address:', token5.address);  
   });
 
 
