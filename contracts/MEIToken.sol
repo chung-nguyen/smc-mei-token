@@ -7,7 +7,7 @@ pragma solidity ^0.8.0;
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
  */
-interface IERC20Upgradeable {
+interface IERC20 {
     /**
      * @dev Returns the amount of tokens in existence.
      */
@@ -89,7 +89,7 @@ interface IERC20Upgradeable {
  *
  * _Available since v4.1._
  */
-interface IERC20MetadataUpgradeable is IERC20Upgradeable {
+interface IERC20Metadata is IERC20 {
     /**
      * @dev Returns the name of the token.
      */
@@ -107,66 +107,6 @@ interface IERC20MetadataUpgradeable is IERC20Upgradeable {
 }
 
 // 
-// OpenZeppelin Contracts v4.4.0 (proxy/utils/Initializable.sol)
-/**
- * @dev This is a base contract to aid in writing upgradeable contracts, or any kind of contract that will be deployed
- * behind a proxy. Since a proxied contract can't have a constructor, it's common to move constructor logic to an
- * external initializer function, usually called `initialize`. It then becomes necessary to protect this initializer
- * function so it can only be called once. The {initializer} modifier provided by this contract will have this effect.
- *
- * TIP: To avoid leaving the proxy in an uninitialized state, the initializer function should be called as early as
- * possible by providing the encoded function call as the `_data` argument to {ERC1967Proxy-constructor}.
- *
- * CAUTION: When used with inheritance, manual care must be taken to not invoke a parent initializer twice, or to ensure
- * that all initializers are idempotent. This is not verified automatically as constructors are by Solidity.
- *
- * [CAUTION]
- * ====
- * Avoid leaving a contract uninitialized.
- *
- * An uninitialized contract can be taken over by an attacker. This applies to both a proxy and its implementation
- * contract, which may impact the proxy. To initialize the implementation contract, you can either invoke the
- * initializer manually, or you can include a constructor to automatically mark it as initialized when it is deployed:
- *
- * [.hljs-theme-light.nopadding]
- * ```
- * /// @custom:oz-upgrades-unsafe-allow constructor
- * constructor() initializer {}
- * ```
- * ====
- */
-abstract contract Initializable {
-    /**
-     * @dev Indicates that the contract has been initialized.
-     */
-    bool private _initialized;
-
-    /**
-     * @dev Indicates that the contract is in the process of being initialized.
-     */
-    bool private _initializing;
-
-    /**
-     * @dev Modifier to protect an initializer function from being invoked twice.
-     */
-    modifier initializer() {
-        require(_initializing || !_initialized, "Initializable: contract is already initialized");
-
-        bool isTopLevelCall = !_initializing;
-        if (isTopLevelCall) {
-            _initializing = true;
-            _initialized = true;
-        }
-
-        _;
-
-        if (isTopLevelCall) {
-            _initializing = false;
-        }
-    }
-}
-
-// 
 // OpenZeppelin Contracts v4.4.0 (utils/Context.sol)
 /**
  * @dev Provides information about the current execution context, including the
@@ -178,13 +118,7 @@ abstract contract Initializable {
  *
  * This contract is only required for intermediate, library-like contracts.
  */
-abstract contract ContextUpgradeable is Initializable {
-    function __Context_init() internal initializer {
-        __Context_init_unchained();
-    }
-
-    function __Context_init_unchained() internal initializer {
-    }
+abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
@@ -192,7 +126,6 @@ abstract contract ContextUpgradeable is Initializable {
     function _msgData() internal view virtual returns (bytes calldata) {
         return msg.data;
     }
-    uint256[50] private __gap;
 }
 
 // 
@@ -222,7 +155,7 @@ abstract contract ContextUpgradeable is Initializable {
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeable, IERC20MetadataUpgradeable {
+contract ERC20 is Context, IERC20, IERC20Metadata {
     mapping(address => uint256) private _balances;
 
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -241,12 +174,7 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    function __ERC20_init(string memory name_, string memory symbol_) internal initializer {
-        __Context_init_unchained();
-        __ERC20_init_unchained(name_, symbol_);
-    }
-
-    function __ERC20_init_unchained(string memory name_, string memory symbol_) internal initializer {
+    constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
     }
@@ -548,16 +476,16 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
         address to,
         uint256 amount
     ) internal virtual {}
-    uint256[45] private __gap;
 }
 
 // 
-contract MEIToken is Initializable, ERC20Upgradeable {
-    function initialize(string memory name, string memory symbol, uint256 initialSupply) public virtual initializer {
-        __ERC20_init(name, symbol);
-        _mint(_msgSender(), initialSupply);
-    }
-
+// OpenZeppelin Contracts v4.4.0 (token/ERC20/extensions/ERC20Burnable.sol)
+/**
+ * @dev Extension of {ERC20} that allows token holders to destroy both their own
+ * tokens and those that they have an allowance for, in a way that can be
+ * recognized off-chain (via event analysis).
+ */
+abstract contract ERC20Burnable is Context, ERC20 {
     /**
      * @dev Destroys `amount` tokens from the caller.
      *
@@ -585,5 +513,12 @@ contract MEIToken is Initializable, ERC20Upgradeable {
             _approve(account, _msgSender(), currentAllowance - amount);
         }
         _burn(account, amount);
+    }
+}
+
+// 
+contract MEIToken is ERC20Burnable {
+    constructor(string memory name, string memory symbol, uint256 totalSupply) ERC20(name, symbol) {
+        _mint(msg.sender, totalSupply);
     }
 }

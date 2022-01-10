@@ -1,6 +1,6 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "Initializable",
+  "contractName": "Context",
   "sourceName": "contracts/MEIToken.sol",
   "abi": [],
   "bytecode": "0x",

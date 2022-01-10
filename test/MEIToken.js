@@ -22,9 +22,8 @@ describe("Token contract", function () {
 
     // To deploy our contract, we just have to call Token.deploy() and await
     // for it to be deployed(), which happens once its transaction has been
-    // mined.
-    // hardhatToken = await Token.deploy([env.TOKEN_NAME, env.TOKEN_TICKER, env.TOKEN_TOTAL_SUPPLY]);
-    hardhatToken = await upgrades.deployProxy(Token, [env.TOKEN_NAME, env.TOKEN_TICKER, env.TOKEN_TOTAL_SUPPLY]);
+    // mined.    
+    hardhatToken = await Token.deploy(env.TOKEN_NAME, env.TOKEN_TICKER, ethers.utils.parseEther(env.TOKEN_TOTAL_SUPPLY.toString()));
     await hardhatToken.deployed();
   });
 
