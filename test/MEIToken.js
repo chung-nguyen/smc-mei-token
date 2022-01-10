@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const { expect, use } = require("chai");
 const { solidity } = require("ethereum-waffle");
 
@@ -23,20 +25,33 @@ describe("Token contract", function () {
     // To deploy our contract, we just have to call Token.deploy() and await
     // for it to be deployed(), which happens once its transaction has been
     // mined.    
-    hardhatToken = await Token.deploy(env.TOKEN_NAME, env.TOKEN_TICKER, ethers.utils.parseEther(env.TOKEN_TOTAL_SUPPLY.toString()));
+    const today = moment().unix();
+    hardhatToken = await Token.deploy(env.TOKEN_NAME, env.TOKEN_TICKER, today.toString());
     await hardhatToken.deployed();
+
+    await hardhatToken.release();
   });
 
-  // You can nest describe calls to create subsections.
   describe("Deployment", function () {
-    // `it` is another Mocha function. This is the one you use to define your
-    // tests. It receives the test name, and a callback function.
-
-    it("Should assign the total supply of tokens to the owner", async function () {
+    it("Should be able to mint initial supply after opening time", async function () {
       const totalSupply = await hardhatToken.totalSupply();
-      const ownerBalance = await hardhatToken.balanceOf(owner.address);
+      const ownerBalance = await hardhatToken.balanceOf(owner.address);      
       expect(totalSupply).to.equal(ownerBalance);
     });
+
+    it("Vesting calculation must be correct", async function () {
+      const r1 = await hardhatToken.getReleasableAmount(moment().add(366, 'd').unix());
+      expect(r1).to.equal(ethers.utils.parseEther('30750000'));
+
+      const r2 = await hardhatToken.getReleasableAmount(moment().add(459, 'd').unix());
+      expect(r2).to.equal(ethers.utils.parseEther('61500000'));      
+
+      const r3 = await hardhatToken.getReleasableAmount(moment().add(30.5 * 3 * 15, 'd').unix());
+      expect(r3).to.equal(ethers.utils.parseEther('369000000'));      
+
+      const r4 = await hardhatToken.getReleasableAmount(moment().add(30.5 * 3 * 15 + 100, 'd').unix());
+      console.log(r4);
+    })
   });
 
   describe("Transactions", function () {

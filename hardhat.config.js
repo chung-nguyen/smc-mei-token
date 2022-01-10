@@ -12,7 +12,7 @@ const secret = JSON.parse(fs.readFileSync('.secret'));
 task('deployMEI', 'Deploy MEI token')
   .setAction(async () => {
     const MEIToken = await ethers.getContractFactory('MEIToken');
-    const token = MEIToken.deploy(env.TOKEN_NAME, env.TOKEN_TICKER, ethers.utils.parseEther(env.TOKEN_TOTAL_SUPPLY.toString()));
+    const token = MEIToken.deploy(env.TOKEN_NAME, env.TOKEN_TICKER);
     await token.deployed();
 
     console.log('Token deployed to:', token.address);
