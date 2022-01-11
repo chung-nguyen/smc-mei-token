@@ -602,6 +602,21 @@ contract MEIToken is ERC20Burnable, Ownable {
     // Unlocking reserve requires several days holding
     uint256 public constant UNPLANNED_UNLOCK_HOLDING_DURATION = 3 days;
 
+    // Duration of a quarter in a year (by seconds)
+    uint256 public constant ONE_QUARTER_YEAR = 7905600;
+
+    // Initial supply of 311 millions
+    uint256 public constant INITIAL_SUPPLY = 311000000;
+
+    // First quarter to start vesting more
+    uint256 public constant ADDITIONAL_VESTING_QUARTER = 5;
+
+    // Final quarter to vest last tokens
+    uint256 public constant LAST_VESTING_QUARTER = 15;
+
+    // Additional quarter supply from 5th quarter
+    uint256 public constant QUARTERLY_SUPPLY_FROM_5 = 30750000;
+
     // Opening time of MEI token
     uint256 public immutable openingTime;
 
@@ -714,15 +729,15 @@ contract MEIToken is ERC20Burnable, Ownable {
         view
         returns (uint256)
     {
-        uint256 quarter = (timeStamp - openingTime) / 7905600;
+        uint256 quarter = (timeStamp - openingTime) / ONE_QUARTER_YEAR;
 
         uint256 vestedAmount;
-        if (quarter < 4) {
+        if (quarter < (ADDITIONAL_VESTING_QUARTER-1)) {
             // Initial 311 millions
-            vestedAmount = 311000000;
-        } else if (quarter < 16) {
+            vestedAmount = INITIAL_SUPPLY;
+        } else if (quarter <= LAST_VESTING_QUARTER) {
             // After 4th quarter, vest 30,750,000 every quarter until the end
-            vestedAmount = 311000000 + (quarter - 3) * 30750000;
+            vestedAmount = INITIAL_SUPPLY + (quarter - 3) * QUARTERLY_SUPPLY_FROM_5;
         } else {
             // Release everything after this point
             return TOTAL_SUPPLY_LIMIT - TOTAL_UNPLANNED_RESERVE;
