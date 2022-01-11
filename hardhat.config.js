@@ -1,4 +1,5 @@
 const fs = require('fs');
+const moment = require('moment');
 
 require('@openzeppelin/hardhat-upgrades');
 
@@ -11,8 +12,10 @@ const secret = JSON.parse(fs.readFileSync('.secret'));
  */
 task('deployMEI', 'Deploy MEI token')
   .setAction(async () => {
+    const now = moment().unix();
+
     const MEIToken = await ethers.getContractFactory('MEIToken');
-    const token = MEIToken.deploy(env.TOKEN_NAME, env.TOKEN_TICKER);
+    const token = await MEIToken.deploy(env.TOKEN_NAME, env.TOKEN_TICKER, now);
     await token.deployed();
 
     console.log('Token deployed to:', token.address);

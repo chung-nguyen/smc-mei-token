@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * Metain Token
+ * - Total supply limit is 1 billion, and can burn.
+ * - Initial fund is released at start, additional funds will be vested quarterly.
+ * - Unplanned spending is reserved, can be requested to release by owner but will be held for 3 days before unlocking.
+ */
 contract MEIToken is ERC20Burnable, Ownable {
     // MEI token has 18 decimal points as ethereum
     uint256 public constant DECIMALS = 10**18;
