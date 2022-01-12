@@ -6,7 +6,7 @@
   "author": "ntchung <nguyentruongchung@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "ganache-cli --networkId 1337 -d -f https://data-seed-prebsc-1-s1.binance.org:8545 -m \"myth like bonus scare over problem client lizard pioneer submit female collect\"",
+    "dev": "ganache-cli --networkId 1337 -d -m \"myth like bonus scare over problem client lizard pioneer submit female collect\"",
     "flatten": "gulp flatten",
     "compile": "hardhat compile",
     "test": "hardhat test --network dev",

@@ -4,12 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-/**
- * Metain Token
- * - Total supply limit is 1 billion, and can burn.
- * - Initial fund is released at start, additional funds will be vested quarterly.
- * - Unplanned spending is reserved, can be requested to release by owner but will be held for 3 days before unlocking.
- */
 contract MEIToken is ERC20Burnable, Ownable {
     // MEI token has 18 decimal points as ethereum
     uint256 public constant DECIMALS = 10**18;
@@ -67,17 +61,11 @@ contract MEIToken is ERC20Burnable, Ownable {
      */
     function release() external onlyOwner {
         uint256 timeStamp = block.timestamp;
-        require(
-            timeStamp >= openingTime,
-            "MEI Token: vesting has not started"
-        );
+        require(timeStamp >= openingTime, "MEI Token: vesting has not started");
 
         uint256 relasedAmount = getReleasableAmount(timeStamp);
-        require(
-            relasedAmount > 0,
-            "MEI Token: no token ready yet"
-        );
-        
+        require(relasedAmount > 0, "MEI Token: no token ready yet");
+
         _totalReleased = _totalReleased + relasedAmount;
         _mint(msg.sender, relasedAmount);
     }
@@ -90,13 +78,15 @@ contract MEIToken is ERC20Burnable, Ownable {
         require(
             _pendingUnplannedAmount == 0,
             "MEI Token: another unlock is still pending"
-        );        
+        );
         require(
             amount <= TOTAL_UNPLANNED_RESERVE - _totalUnplannedReleased,
             "MEI Token: not enough reserved to unlock"
         );
 
-        _unplannedReleaseTimeStamp = timeStamp + UNPLANNED_UNLOCK_HOLDING_DURATION;
+        _unplannedReleaseTimeStamp =
+            timeStamp +
+            UNPLANNED_UNLOCK_HOLDING_DURATION;
         _pendingUnplannedAmount = amount;
 
         emit RequestRelease(amount, _unplannedReleaseTimeStamp);
@@ -153,17 +143,19 @@ contract MEIToken is ERC20Burnable, Ownable {
         uint256 quarter = (timeStamp - openingTime) / ONE_QUARTER_YEAR;
 
         uint256 vestedAmount;
-        if (quarter < (ADDITIONAL_VESTING_QUARTER-1)) {
-            // Initial 311 millions
+        if (quarter < (ADDITIONAL_VESTING_QUARTER - 1)) {
+            // Initial funds
             vestedAmount = INITIAL_SUPPLY;
         } else if (quarter <= LAST_VESTING_QUARTER) {
-            // After 4th quarter, vest 30,750,000 every quarter until the end
-            vestedAmount = INITIAL_SUPPLY + (quarter - 3) * QUARTERLY_SUPPLY_FROM_5;
+            // Vest more every quarter until the end
+            vestedAmount =
+                INITIAL_SUPPLY +
+                (quarter + 2 - ADDITIONAL_VESTING_QUARTER) *
+                QUARTERLY_SUPPLY_FROM_5;
         } else {
             // Release everything after this point
             return TOTAL_SUPPLY_LIMIT - TOTAL_UNPLANNED_RESERVE;
         }
-        
         return vestedAmount * DECIMALS - _totalReleased;
     }
 }

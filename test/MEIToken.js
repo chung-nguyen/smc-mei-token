@@ -40,17 +40,18 @@ describe("Token contract", function () {
     });
 
     it("Vesting calculation must be correct", async function () {
-      const r1 = await hardhatToken.getReleasableAmount(moment().add(366, 'd').unix());
+      
+      const r1 = await hardhatToken.getReleasableAmount(moment().add(366, 'd').unix());      
       expect(r1).to.equal(ethers.utils.parseEther('30750000'));
 
-      const r2 = await hardhatToken.getReleasableAmount(moment().add(459, 'd').unix());
+      const r2 = await hardhatToken.getReleasableAmount(moment().add(459, 'd').unix());      
       expect(r2).to.equal(ethers.utils.parseEther('61500000'));      
 
       const r3 = await hardhatToken.getReleasableAmount(moment().add(30.5 * 3 * 15, 'd').unix());
       expect(r3).to.equal(ethers.utils.parseEther('369000000'));      
 
       const r4 = await hardhatToken.getReleasableAmount(moment().add(30.5 * 3 * 15 + 100, 'd').unix());
-      console.log(r4);
+      expect(r4).to.equal(ethers.utils.parseEther('680000000'));      
     })
   });
 
