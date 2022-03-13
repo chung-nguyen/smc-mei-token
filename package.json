@@ -11,7 +11,9 @@
     "compile": "hardhat compile",
     "test": "hardhat test --network dev",
     "deploy:dev": "hardhat deployMEI --verbose --network dev",
-    "deploy:testnet": "hardhat deployMEI --verbose --network testnet"
+    "deploy:testnet": "hardhat deployMEI --verbose --network testnet",
+    "deploy:ropsten": "hardhat deployMEI --verbose --network ropsten",
+    "deploy:kovan": "hardhat deployMEI --verbose --network kovan"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.0",

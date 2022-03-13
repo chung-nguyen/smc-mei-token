@@ -14,6 +14,11 @@ task('deployMEI', 'Deploy MEI token')
   .setAction(async () => {
     const now = moment().unix();
 
+    const [deployer] = await ethers.getSigners();
+
+    console.log('Deploying contracts with the account:', deployer.address);
+    console.log('Account balance:', (await deployer.getBalance()).toString());
+
     const MEIToken = await ethers.getContractFactory('MEIToken');
     const token = await MEIToken.deploy(env.TOKEN_NAME, env.TOKEN_TICKER, now);
     await token.deployed();
@@ -92,9 +97,15 @@ module.exports = {
     
     ropsten: {
       url: 'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-      accounts: [secret.testnet],
+      accounts: [secret.ropsten],
       chainId: 3
-    }    
+    },
+    
+    kovan: {
+      url: "https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      accounts: [secret.kovan],
+      chainId: 42
+    }
   },
   solidity: {
     version: "0.8.4",
